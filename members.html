@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Members | Kumpulan People Ireng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <video id="bg-video" autoplay muted loop playsinline>
+        <source src="https://raw.githubusercontent.com/gataubroicape-droid/dat2/main/uploads/06071b-1766158674257.mp4" type="video/mp4">
+    </video>
+    <div class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')"><i class="fas fa-bars"></i></div> 
+    <aside class="sidebar">
+        <div class="brand">Kumpulan People Ireng</div>
+        <ul class="menu-list">
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="members.html" class="active"><i class="fas fa-users"></i> Members</a></li>
+            <li><a href="announcements.html"><i class="fas fa-bullhorn"></i> Info</a></li>
+        </ul>
+       <!-- <div class="sidebar-footer">
+            <a href="admin.html" style="color:#555; text-decoration:none; font-size:0.8rem;">Admin Login</a>
+        </div>-->
+    </aside>
+    <main class="main-content">
+        <section>
+            <div class="section-title" data-aos="fade-right">Squad List</div>          
+            <div class="member-controls" data-aos="fade-down">
+                <button class="filter-btn active" onclick="filterMembers('all')">All Squad</button>
+                <button class="filter-btn" onclick="filterMembers('admin')">Admins</button>
+                <button class="filter-btn" onclick="filterMembers('mod')">Moderators</button>
+                <button class="filter-btn" onclick="filterMembers('member')">Members</button>
+            </div>
+            <div id="loading" class="loader-container"><div class="loader"></div></div>
+            <div class="member-grid" id="member-container"></div>
+        </section>
+        <footer><p>&copy; 27/01/24 KPI<span>🤍</span>.</p></footer>
+    </main>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script type="module">
+        import { db } from './config.js';
+        import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+       AOS.init({ once: true, duration: 800 });
+        let allMembers = []; 
+        function getGameIcon(name) {
+    return 'fa-gamepad';
+}
+        async function fetchMembers() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "members"));
+                allMembers = [];
+                querySnapshot.forEach((doc) => {
+                    allMembers.push(doc.data());
+                });
+                document.getElementById('loading').style.display = 'none';
+                renderMembers('all');
+            } catch (e) {
+                console.error("Error: ", e);
+                document.getElementById('member-container').innerHTML = "Gagal memuat data.";
+            }
+        }
+        window.renderMembers = (filter) => {
+            const container = document.getElementById('member-container');
+            container.innerHTML = '';
+            const filtered = filter === 'all' ? allMembers : allMembers.filter(m => m.role === filter);
+            if(filtered.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-sec);">Belum ada member di kategori ini.</p>';
+                return;
+            }
+            filtered.forEach((m, idx) => {
+                // Parse Game String (ex: "Valo:Id, Dota:Id")
+                let gamesHtml = '';
+                if(m.games) {
+                    m.games.split(',').forEach(g => {
+                        const parts = g.split(':');
+                        const gName = parts[0]?.trim() || '';
+                        const gId = parts[1]?.trim() || '';
+                        if(gName) {
+                            gamesHtml += `<div class="game-row"><i class="fas ${getGameIcon(gName)}"></i> <span>${gName}: <b style="color:white">${gId}</b></span></div>`;
+                        }
+                    });
+                }
+                let socialHtml = '';
+                if(m.socials) {
+                    m.socials.split(',').forEach(s => {
+                        const parts = s.split(':');
+                        const platform = parts[0]?.trim();
+                        const link = s.substring(s.indexOf(':') + 1).trim();
+                        if(platform) socialHtml += `<a href="${link}" target="_blank"><i class="fab fa-${platform}"></i></a>`;
+                    });
+                }
+                container.innerHTML += `
+                    <div class="member-card" data-aos="zoom-in" data-aos-delay="${idx * 50}">
+                        <span class="role-badge role-${m.role}">${m.role}</span>
+                        <div class="member-header">
+                            <div class="card-pic" style="background-image: url('${m.avatar}')"></div>
+                            <div>
+                                <h3>${m.name}</h3>
+                                <p class="member-details">${m.age} th • ${m.gender}</p>
+                            </div>
+                        </div>
+                        <div class="game-ids">${gamesHtml}</div>
+                        <div class="social-row">${socialHtml}</div>
+                    </div>
+                `;
+            });
+        };
+        window.filterMembers = (role) => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderMembers(role);
+        }
+        fetchMembers();
+    </script>
+</body>
+</html>
