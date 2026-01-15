@@ -57,10 +57,9 @@
         </div>  
           
         <div class="admin-nav">  
-            <button class="filter-btn active" onclick="showForm('member', this)">Manage Members</button>
-            <button class="filter-btn" onclick="showForm('announce', this)">Announcements</button>
-            <button class="filter-btn" onclick="showForm('materi', this)">Materi</button>
-            <a href="index.html" class="filter-btn" style="text-decoration:none;">View Site</a>
+            <button class="filter-btn active" onclick="showForm('member')">Manage Members</button>  
+            <button class="filter-btn" onclick="showForm('announce')">Announcements</button>  
+            <a href="index.html" class="filter-btn" style="text-decoration:none; border-color:var(--primary); color: var(--primary);">View Site</a>  
         </div>  
 
         <div id="member-section" class="admin-container">  
@@ -143,36 +142,6 @@
                 <div id="admin-announce-list"></div>  
             </div>  
         </div>  
-
-        <div id="materi-section" class="admin-container" style="display:none;">
-    <h3 style="margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px;">
-        Add Materi (PPT)
-    </h3>
-
-    <form id="materiForm">
-        <div class="form-group">
-            <label>Nama Materi</label>
-            <input type="text" id="mMateriName" placeholder="Materi 1" required>
-        </div>
-
-        <div class="form-group">
-            <label>Judul Materi</label>
-            <input type="text" id="mMateriTitle" required>
-        </div>
-
-        <div class="form-group">
-            <label>Pengertian / Isi</label>
-            <textarea id="mMateriContent" rows="5" required></textarea>
-        </div>
-
-        <button type="submit" class="btn-submit">Simpan Materi</button>
-    </form>
-
-    <div class="data-list">
-        <h4>Daftar Materi</h4>
-        <div id="admin-materi-list"></div>
-    </div>
-        </div>
           
         <footer class="admin-footer">  
             <p>&copy; 27/01/24 KPI<span>🤍</span>.</p>  
@@ -279,68 +248,27 @@
             } catch (e) {  
                 alert('Error: ' + e.message);  
             }  
-        });
-      const materiForm = document.getElementById('materiForm');
-
-if (materiForm) {
-    const cleanForm = materiForm.cloneNode(true);
-    materiForm.replaceWith(cleanForm);
-
-    cleanForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        try {
-            await addDoc(collection(db, "announcements"), {
-                materiName: document.getElementById('mMateriName').value,
-                title: document.getElementById('mMateriTitle').value,
-                content: document.getElementById('mMateriContent').value,
-                type: "materi",
-                createdAt: new Date()
-            });
-
-            alert('Materi berhasil ditambahkan!');
-            cleanForm.reset();
-        } catch (err) {
-            alert('Error: ' + err.message);
-        }
-    });
-}
-        onSnapshot(collection(db, "announcements"), (snapshot) => {
-    const announceList = document.getElementById('admin-announce-list');
-    const materiList   = document.getElementById('admin-materi-list');
-
-    announceList.innerHTML = '';
-    materiList.innerHTML = '';
-
-    snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-
-        if (data.type === "materi") {
-            materiList.innerHTML += `
-                <div class="list-item">
-                    <span>${data.materiName} - ${data.title}</span>
-                    <button class="btn-delete" onclick="deleteItem('announcements','${docSnap.id}')">Hapus</button>
-                </div>
-            `;
-        } else {
-            announceList.innerHTML += `
-                <div class="list-item">
-                    <span>${data.title}</span>
-                    <button class="btn-delete" onclick="deleteItem('announcements','${docSnap.id}')">Hapus</button>
-                </div>
-            `;
-        }
-    });
-});
-    }
-    window.showForm = (type, el) => {
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    el.classList.add('active');
-
-    document.getElementById('member-section').style.display   = type === 'member' ? 'block' : 'none';
-    document.getElementById('announce-section').style.display = type === 'announce' ? 'block' : 'none';
-    document.getElementById('materi-section').style.display   = type === 'materi' ? 'block' : 'none';
-}
+        });  
+        onSnapshot(collection(db, "announcements"), (snapshot) => {  
+            const list = document.getElementById('admin-announce-list');  
+            list.innerHTML = '';  
+            snapshot.forEach((docSnap) => {  
+                const data = docSnap.data();  
+                list.innerHTML += `  
+                    <div class="list-item">  
+                        <span>${data.title}</span>  
+                        <button class="btn-delete" onclick="deleteItem('announcements', '${docSnap.id}')">Hapus</button>  
+                    </div>  
+                `;  
+            });  
+        });  
+    }  
+    window.showForm = (type) => {  
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));  
+        event.target.classList.add('active');  
+        document.getElementById('member-section').style.display = type === 'member' ? 'block' : 'none';  
+        document.getElementById('announce-section').style.display = type === 'announce' ? 'block' : 'none';  
+    }  
     window.deleteItem = async (col, id) => {  
         if(confirm('Yakin ingin menghapus data ini?')) {  
             try {  
@@ -352,5 +280,5 @@ if (materiForm) {
     }  
 </script>
 
-</body> 
-    </html>
+</body>  
+</html>  Taro dmn?
