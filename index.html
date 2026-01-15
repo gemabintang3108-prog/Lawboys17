@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KPI OFFICIAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        {
+            box-sizing: border-box !important;
+        }
+        .join-section {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .btn-join-kpi {
+            background: linear-gradient(135deg, #ff0040, #b71c1c);
+            color: white;
+            padding: 16px 45px;
+            border-radius: 50px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(255, 0, 64, 0.5);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-join-kpi:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 35px rgba(255, 0, 64, 0.8);
+        }
+        .kpi-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95); 
+            z-index: 9999;
+            justify-content: center; 
+            align-items: center; 
+            padding-bottom: 20px;
+            backdrop-filter: blur(5px);
+        }
+        .kpi-modal-content {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 20px;
+            width: 90%; 
+            max-width: 450px;
+            padding: 25px 20px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        @keyframes popUp {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .kpi-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #888;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(255,255,255,0.1);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .kpi-close:hover { background: #ff0040; color: white; }
+        .kpi-modal-title {
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.4rem;
+            border-bottom: 2px solid #ff0040;
+            padding-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+        .kpi-form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .kpi-label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: 'Outfit', sans-serif;
+            margin-left: 5px;
+        }
+        .kpi-input, .kpi-select, .kpi-textarea {
+            width: 100% !important;
+            padding: 12px 15px;
+            background: #252525;
+            border: 2px solid #333;
+            border-radius: 12px;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        .kpi-input:focus, .kpi-textarea:focus {
+            outline: none;
+            border-color: #ff0040;
+            background: #2e2e2e;
+        }
+        .kpi-textarea {
+            resize: none; 
+            min-height: 100px;
+            line-height: 1.5;
+        }
+        .kpi-row {
+            display: flex;
+            gap: 12px;
+        }
+        .kpi-col {
+            flex: 1; 
+        }
+        .kpi-btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+        .kpi-btn-submit:hover { 
+            background: #1ebc57; 
+            transform: scale(0.98); 
+        }
+    </style>
+</head>
+<body>
+    <video id="bg-video" autoplay muted loop playsinline>
+        <source src="https://raw.githubusercontent.com/gataubroicape-droid/dat2/main/uploads/06071b-1766158674257.mp4" type="video/mp4">
+    </video>
+    <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+    <aside class="sidebar">
+        <div class="brand">Kumpulan people ireng</div>
+        <ul class="menu-list">
+            <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="members.html"><i class="fas fa-users"></i> Members</a></li>
+            <li><a href="announcements.html"><i class="fas fa-bullhorn"></i>Information</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <span>Mode</span>
+            <div class="theme-switch" onclick="toggleTheme()"><i class="fas fa-moon"></i></div>
+        </div>
+    </aside>
+    <main class="main-content">
+        <section class="home-banner">
+            <div class="banner-content" data-aos="zoom-out">
+                <h1>Welcome to<br><span>Kumpulan<br>People<br></span>Ireng</h1>
+                <p class="banner-subtitle">Have Fun. No Drama. Just Play.</p>
+            </div>
+        </section>
+        <section id="profile">
+            <div class="section-title" data-aos="fade-right">Who We Are</div>
+            <div class="profile-container" data-aos="fade-up">
+                <div class="profile-img">
+                    <img src="https://raw.githubusercontent.com/gataubroicape-droid/dat2/main/uploads/9ff76e-1767725905681.jpg" alt="KPI">
+                </div>
+                <div class="profile-bio">
+                    <h2>Komunitas Anti Pandang Bulu</h2>
+                    <p>
+                        KPI adalah tempat pelarian dari dunia kompetitif yang keras. Kami berdiri di atas prinsip bahwa gaming seharusnya menyenangkan, bukan menegangkan.
+                        Kami menerima semua gamer, casual maupun veteran, asalkan menjunjung tinggi rasa hormat.<br>Semua game, Semua kalangan, Semua benda yang ada di Bumi🗿
+                    </p>
+                    <div class="community-socials">
+                        <a href="https://chat.whatsapp.com/H9PvDi03XP4CwZpsGggvoq"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://instagram.com/kpiofficial"><i class="fab fa-instagram"></i></a>
+                        <a href="https://t.me/kpiofficial"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section> 
+        <div class="join-section" data-aos="zoom-in">
+            <button class="btn-join-kpi" onclick="openKpiModal()">
+                JOIN KPI SEKARANG <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <footer>
+            <p>&copy; 27/01/24 KPI<span>🤍</span>.</p>
+        </footer>
+    </main>
+    <div id="kpiModal" class="kpi-modal-overlay">
+        <div class="kpi-modal-content">
+            <div class="kpi-close" onclick="closeKpiModal()">&times;</div>
+            <div class="kpi-modal-title">FORM PENDAFTARAN</div>          
+            <form id="joinForm" onsubmit="submitToWa(event)">
+                <div class="kpi-form-group">
+                    <label class="kpi-label">Nama Panggilan</label>
+                    <input type="text" id="kpiNama" class="kpi-input" placeholder="Tulis nama panggilanmu..." required>
+                </div>
+                <div class="kpi-row">
+                    <div class="kpi-col">
+                        <div class="kpi-form-group">
+                            <label class="kpi-label">Umur</label>
+                            <input type="number" id="kpiUmur" class="kpi-input" placeholder="17" required>
+                        </div>
+                    </div>
+                    <div class="kpi-col">
+                        <div class="kpi-form-group">
+                            <label class="kpi-label">Gender</label>
+                            <select id="kpiGender" class="kpi-select">
+                                <option value="Laki-laki">Laki-laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="kpi-form-group">
+                    <label class="kpi-label">List Game + ID/Nickname</label>
+                    <textarea id="kpiGames" class="kpi-textarea" placeholder="Contoh:&#10;ML: LordZilong (ID:12345)&#10;FF: ProPlayer01" required></textarea>
+                </div>
+                <div class="kpi-form-group">
+                    <label class="kpi-label">List Sosmed + Username</label>
+                    <textarea id="kpiSosmed" class="kpi-textarea" placeholder="Contoh:&#10;IG: @namakamu&#10;TikTok: @namakamu" required></textarea>
+                </div>
+                <button type="submit" class="kpi-btn-submit">
+                    <i class="fab fa-whatsapp"></i> DAFTAR SEKARANG
+                </button>
+            </form>
+        </div>
+    </div>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            once: true,
+            offset: 100,
+            duration: 800,
+        });
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        }
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const icon = document.querySelector('.theme-switch i');
+            if(document.body.classList.contains('light-mode')){
+                icon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        if(localStorage.getItem('theme') === 'light'){
+            document.body.classList.add('light-mode');
+            const icon = document.querySelector('.theme-switch i');
+            if(icon) icon.classList.replace('fa-moon', 'fa-sun');
+        }
+        function openKpiModal() {
+            document.getElementById('kpiModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+        function closeKpiModal() {
+            document.getElementById('kpiModal').style.display = 'none';
+            document.body.style.overflow = 'auto'; 
+        }
+        window.onclick = function(event) {
+            const modal = document.getElementById('kpiModal');
+            if (event.target == modal) {
+                closeKpiModal();
+            }
+        }
+        function submitToWa(e) {
+            e.preventDefault();
+            const nama = document.getElementById('kpiNama').value;
+            const umur = document.getElementById('kpiUmur').value;
+            const gender = document.getElementById('kpiGender').value;
+            const games = document.getElementById('kpiGames').value;
+            const sosmed = document.getElementById('kpiSosmed').value;
+            const nomorAdmin = "nomor wa nya"; 
+            const text = 
+                `*FORM REGISTRASI KPI* 🚀%0A` +
+                `--------------------------------%0A` +
+                `👤 *Nama:* ${nama}%0A` +
+                `🎂 *Umur:* ${umur} Tahun%0A` +
+                `🚻 *Gender:* ${gender}%0A` +
+                `--------------------------------%0A` +
+                `🎮 *Game & ID:*%0A${games}%0A` +
+                `--------------------------------%0A` +
+                `📱 *Sosmed:*%0A${sosmed}%0A` +
+                `--------------------------------%0A` +
+                `_Admin, saya mau join dong!_`;
+
+            const url = `https://wa.me/${nomorAdmin}?text=${text}`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
