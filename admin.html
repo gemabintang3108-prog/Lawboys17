@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | KPI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-wrapper {
+            height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
+        }
+        .login-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px; border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            width: 90%; max-width: 400px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <video id="bg-video" autoplay muted loop playsinline>
+        <source src="https://raw.githubusercontent.com/gataubroicape-droid/dat2/main/uploads/06071b-1766158674257.mp4" type="video/mp4">
+    </video>
+
+
+    <div id="login-view" class="login-wrapper">
+        <h2 style="margin-bottom: 20px;">Restricted Area</h2>
+        <div class="login-box">
+            <h3 style="color:var(--primary); margin-bottom: 20px;">Admin Login</h3>
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email Admin" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-submit" id="btnLogin">Masuk</button>
+            </form>
+            <p id="loginError" style="color: red; margin-top: 15px; font-size: 0.9rem; display: none;"></p>
+            <div style="margin-top: 20px;">
+                <a href="index.html" style="color: #777; text-decoration: none; font-size: 0.8rem;">&larr; Kembali ke Website</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-view" style="display: none;">
+        
+        <div class="main-content" style="margin-left:0; padding-top: 40px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 5%; margin-bottom: 30px;">
+                <h2 class="section-title" style="margin:0; font-size: 1.8rem;">Admin Dashboard</h2>
+                <button onclick="logout()" style="background: #333; color: white; border: 1px solid #555; padding: 5px 15px; border-radius: 5px; cursor: pointer;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+            
+            <div class="admin-nav">
+                <button class="filter-btn active" onclick="showForm('member')">Manage Members</button>
+                <button class="filter-btn" onclick="showForm('announce')">Announcements</button>
+                <a href="index.html" class="filter-btn" style="text-decoration:none; border-color:var(--primary); color: var(--primary);">View Site</a>
+            </div>
+
+            <div id="member-section" class="admin-container">
+                <h3 style="margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px;">Add New Member</h3>
+                <form id="memberForm">
+                    <div class="form-group">
+                        <label>Nama / Nickname</label>
+                        <input type="text" id="mName" required placeholder="Contoh: VeDollar">
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                        <div class="form-group">
+                            <label>Umur</label>
+                            <input type="number" id="mAge" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select id="mGender">
+                                <option value="♂️">Laki-laki</option>
+                                <option value="♀️">Perempuan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select id="mRole">
+                            <option value="member">Member</option>
+                            <option value="moderator">Moderator</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Link Foto Profil (URL)</label>
+                        <input type="text" id="mAvatar" placeholder="https://..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>List Game & ID (Format: Game:ID, Game:ID)</label>
+                        <input type="text" id="mGames" placeholder="pubg:Nep4u, MLBB:TwelVe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Link Sosmed (Format: Platform:Link, Platform:Link)</label>
+                        <input type="text" id="mSocials" placeholder="instagram:https://ig.com/..., discord:https://...">
+                    </div>
+                    <button type="submit" class="btn-submit">Simpan Member</button>
+                </form>
+                
+                <div class="data-list">
+                    <h4>Existing Members</h4>
+                    <div id="admin-member-list"></div>
+                </div>
+            </div>
+
+            <div id="announce-section" class="admin-container" style="display:none;">
+                <h3 style="margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px;">Add Announcement</h3>
+                <form id="announceForm">
+                    <div class="form-group">
+                        <label>Judul Pengumuman</label>
+                        <input type="text" id="aTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select id="aCat">
+                            <option value="🎉Event">Event</option>
+                            <option value="📢Info">Info</option>
+                            <option value="🚧Maintenance">Maintenance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal</label>
+                        <input type="text" id="aDate" placeholder="2 Jan 2026" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi</label>
+                        <textarea id="aDesc" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Post Pengumuman</button>
+                </form>
+                
+                <div class="data-list">
+                    <h4>Active Announcements</h4>
+                    <div id="admin-announce-list"></div>
+                </div>
+            </div>
+            
+            <footer class="admin-footer">
+                <p>&copy; 27/01/24 KPI<span>🤍</span>.</p>
+            </footer>
+        </div>
+    </div>
+    <script type="module">
+        import { db, auth } from './config.js';
+        import { collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('login-view').style.display = 'none';
+                document.getElementById('dashboard-view').style.display = 'block';
+                console.log("Admin logged in: " + user.email);
+                initDashboardData(); 
+            } else {
+                document.getElementById('login-view').style.display = 'flex';
+                document.getElementById('dashboard-view').style.display = 'none';
+            }
+        });
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            const btn = document.getElementById('btnLogin');
+            const errorMsg = document.getElementById('loginError');
+            btn.innerText = "Loading...";
+            errorMsg.style.display = 'none';
+            signInWithEmailAndPassword(auth, email, pass)
+                .then((userCredential) => {
+                    btn.innerText = "Masuk";
+                })
+                .catch((error) => {
+                    btn.innerText = "Masuk";
+                    errorMsg.style.display = 'block';
+                    errorMsg.innerText = "Login Gagal: Email/Password Salah.";
+                    console.error(error.code, error.message);
+                });
+        });
+        window.logout = () => {
+            if(confirm("Keluar dari Admin Panel?")) {
+                signOut(auth).then(() => {
+                    alert("Berhasil Logout");
+                }).catch((error) => {
+                    console.error(error);
+                });
+            }
+        }
+        function initDashboardData() {
+            const memberForm = document.getElementById('memberForm');
+            memberForm.replaceWith(memberForm.cloneNode(true)); 
+            document.getElementById('memberForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.querySelector('#memberForm button');
+                const originalText = btn.innerText;
+                btn.innerText = 'Menyimpan...';
+                try {
+                    await addDoc(collection(db, "members"), {
+                        name: document.getElementById('mName').value,
+                        age: document.getElementById('mAge').value,
+                        gender: document.getElementById('mGender').value,
+                        role: document.getElementById('mRole').value,
+                        avatar: document.getElementById('mAvatar').value,
+                        games: document.getElementById('mGames').value,
+                        socials: document.getElementById('mSocials').value,
+                        createdAt: new Date()
+                    });
+                    alert('Member Berhasil Ditambahkan!');
+                    document.getElementById('memberForm').reset();
+                } catch (e) {
+                    alert('Error: ' + e.message + ' (Pastikan Anda Login)');
+                }
+                btn.innerText = originalText;
+            });
+            onSnapshot(collection(db, "members"), (snapshot) => {
+                const list = document.getElementById('admin-member-list');
+                list.innerHTML = '';
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    list.innerHTML += `
+                        <div class="list-item">
+                            <span>${data.name} (${data.role})</span>
+                            <button class="btn-delete" onclick="deleteItem('members', '${docSnap.id}')">Hapus</button>
+                        </div>
+                    `;
+                });
+            });
+            const announceForm = document.getElementById('announceForm');
+            announceForm.replaceWith(announceForm.cloneNode(true));
+            document.getElementById('announceForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    await addDoc(collection(db, "announcements"), {
+                        title: document.getElementById('aTitle').value,
+                        category: document.getElementById('aCat').value,
+                        date: document.getElementById('aDate').value,
+                        desc: document.getElementById('aDesc').value,
+                        createdAt: new Date()
+                    });
+                    alert('Pengumuman Terkirim!');
+                    document.getElementById('announceForm').reset();
+                } catch (e) {
+                    alert('Error: ' + e.message);
+                }
+            });
+            onSnapshot(collection(db, "announcements"), (snapshot) => {
+                const list = document.getElementById('admin-announce-list');
+                list.innerHTML = '';
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    list.innerHTML += `
+                        <div class="list-item">
+                            <span>${data.title}</span>
+                            <button class="btn-delete" onclick="deleteItem('announcements', '${docSnap.id}')">Hapus</button>
+                        </div>
+                    `;
+                });
+            });
+        }
+        window.showForm = (type) => {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('member-section').style.display = type === 'member' ? 'block' : 'none';
+            document.getElementById('announce-section').style.display = type === 'announce' ? 'block' : 'none';
+        }
+        window.deleteItem = async (col, id) => {
+            if(confirm('Yakin ingin menghapus data ini?')) {
+                try {
+                    await deleteDoc(doc(db, col, id));
+                } catch (e) {
+                    alert("Gagal menghapus: " + e.message);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
