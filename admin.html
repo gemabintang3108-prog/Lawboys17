@@ -281,48 +281,60 @@
             }  
         });
       const materiForm = document.getElementById('materiForm');
-materiForm.replaceWith(materiForm.cloneNode(true));
 
-document.getElementById('materiForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+if (materiForm) {
+    const cleanForm = materiForm.cloneNode(true);
+    materiForm.replaceWith(cleanForm);
 
-    try {
-        await addDoc(collection(db, "announcements"), {
-            materiName: document.getElementById('mMateriName').value,
-            title: document.getElementById('mMateriTitle').value,
-            content: document.getElementById('mMateriContent').value,
-            type: "materi",
-            createdAt: new Date()
-        });
+    cleanForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        alert('Materi berhasil ditambahkan!');
-        document.getElementById('materiForm').reset();
-    } catch (e) {
-        alert('Error: ' + e.message);
-    }
-});
+        try {
+            await addDoc(collection(db, "announcements"), {
+                materiName: document.getElementById('mMateriName').value,
+                title: document.getElementById('mMateriTitle').value,
+                content: document.getElementById('mMateriContent').value,
+                type: "materi",
+                createdAt: new Date()
+            });
+
+            alert('Materi berhasil ditambahkan!');
+            cleanForm.reset();
+        } catch (err) {
+            alert('Error: ' + err.message);
+        }
+    });
+}
         onSnapshot(collection(db, "announcements"), (snapshot) => {
-    const list = document.getElementById('admin-materi-list');
-    list.innerHTML = '';
+    const announceList = document.getElementById('admin-announce-list');
+    const materiList   = document.getElementById('admin-materi-list');
+
+    announceList.innerHTML = '';
+    materiList.innerHTML = '';
 
     snapshot.forEach((docSnap) => {
         const data = docSnap.data();
+
         if (data.type === "materi") {
-            list.innerHTML += `
+            materiList.innerHTML += `
                 <div class="list-item">
                     <span>${data.materiName} - ${data.title}</span>
-                    <button class="btn-delete"
-                        onclick="deleteItem('announcements', '${docSnap.id}')">
-                        Hapus
-                    </button>
+                    <button class="btn-delete" onclick="deleteItem('announcements','${docSnap.id}')">Hapus</button>
+                </div>
+            `;
+        } else {
+            announceList.innerHTML += `
+                <div class="list-item">
+                    <span>${data.title}</span>
+                    <button class="btn-delete" onclick="deleteItem('announcements','${docSnap.id}')">Hapus</button>
                 </div>
             `;
         }
     });
 });
-    window.showForm = (type) => {
+    window.showForm = (type, el) => {
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    el.classList.add('active');
 
     document.getElementById('member-section').style.display   = type === 'member' ? 'block' : 'none';
     document.getElementById('announce-section').style.display = type === 'announce' ? 'block' : 'none';
